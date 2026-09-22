@@ -1,0 +1,20 @@
+{
+  "name": "caraxes",
+  "version": "0.1.0",
+  "description": "A minimal greeting skill for testing the Caraxes Codex plugin.",
+  "author": {
+    "name": "juan1144",
+    "url": "https://github.com/juan1144"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Caraxes",
+    "shortDescription": "Try the Caraxes greeting skill.",
+    "longDescription": "A minimal greeting demonstration to verify plugin installation before building the SDD workflow.",
+    "developerName": "juan1144",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Use $caraxes-greet to greet me."
+  },
+  "repository": "https://github.com/juan1144/caraxes"
+}
