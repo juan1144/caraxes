@@ -2,9 +2,6 @@
 
 A Codex plugin for a test-driven development workflow.
 
-Caraxes will guide development through writing a failing test, observing the
-expected failure, implementing the behavior, and refactoring with passing tests.
-
 ## Status
 
 Initial project setup. The plugin and its workflow are not implemented yet.
