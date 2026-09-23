@@ -115,7 +115,8 @@ plugins/caraxes/.codex-plugin/plugin.json
 plugins/caraxes/skills/caraxes-init/
     SKILL.md                        Agent instructions and discovery metadata
     scripts/workspace.py            Initialization and read-only resolution
-tests/test_workspace.py            Isolated filesystem tests
+tests/unit/workspace/test_workspace.py
+                                    Isolated filesystem tests
 ```
 
 The marketplace's `./plugins/caraxes` source is relative to the repository root.
