@@ -1,7 +1,7 @@
 {
   "name": "caraxes",
-  "version": "0.1.0",
-  "description": "A minimal greeting skill for testing the Caraxes Codex plugin.",
+  "version": "0.1.0+codex.20260922182725",
+  "description": "Initialize and locate an external workspace for Spec-Driven Development.",
   "author": {
     "name": "juan1144",
     "url": "https://github.com/juan1144"
@@ -9,12 +9,12 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Caraxes",
-    "shortDescription": "Try the Caraxes greeting skill.",
-    "longDescription": "A minimal greeting demonstration to verify plugin installation before building the SDD workflow.",
+    "shortDescription": "Set up your external SDD workspace.",
+    "longDescription": "Create and locate a persistent personal workspace for specifications outside target repositories.",
     "developerName": "juan1144",
     "category": "Productivity",
     "capabilities": [],
-    "defaultPrompt": "Use $caraxes-greet to greet me."
+    "defaultPrompt": "Use $caraxes-init to initialize my external SDD workspace."
   },
   "repository": "https://github.com/juan1144/caraxes"
 }
