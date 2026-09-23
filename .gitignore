@@ -6,3 +6,7 @@
 # Operating system files
 .DS_Store
 Thumbs.db
+
+# Python test artifacts
+__pycache__/
+*.py[cod]
