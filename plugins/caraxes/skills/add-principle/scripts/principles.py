@@ -12,8 +12,10 @@ ID_PATTERN = re.compile(r"^P-(\d{3,})$")
 SLUG_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 HEADING_PATTERN = re.compile(r"^# (P-\d{3,}) — (.+?)\s*$")
 SUMMARY_PATTERN = re.compile(r"^Summary: (.+?)\s*$")
-RULE_PATTERN = re.compile(r"^Rule: (.+?)\s*$")
 INDEX_ENTRY_PATTERN = re.compile(r"^- \*\*(P-\d{3,}) — (.+?):\*\* (.+?)\s*$")
+SECTION_PATTERN = re.compile(r"^## (Principle|Rationale|Scope|Implications|Verification|Exceptions)\s*$")
+REQUIRED_SECTIONS = ("Principle", "Rationale", "Scope", "Implications",
+                     "Verification", "Exceptions")
 
 
 class PrinciplesError(ValueError):
@@ -44,12 +46,26 @@ def parse_document(path):
         raise PrinciplesError(f"Principle document must start with an ID heading: {path}")
     principle_id, title = heading.groups()
     summary = next((match.group(1) for line in lines if (match := SUMMARY_PATTERN.match(line))), None)
-    rule = next((match.group(1) for line in lines if (match := RULE_PATTERN.match(line))), None)
-    if summary is None or rule is None:
-        raise PrinciplesError(f"Principle document needs Summary and Rule lines: {path}")
+    sections = {}
+    current = None
+    for line in lines[1:]:
+        section = SECTION_PATTERN.match(line)
+        if section:
+            current = section.group(1)
+            sections[current] = []
+        elif current is not None:
+            sections[current].append(line)
+    missing = [name for name in REQUIRED_SECTIONS if not "\n".join(sections.get(name, [])).strip()]
+    if summary is None or missing:
+        missing_fields = ["Summary"] if summary is None else []
+        missing_fields.extend(missing)
+        raise PrinciplesError(
+            f"Principle document is incomplete; required fields missing: {', '.join(missing_fields)}: {path}")
     if not ID_PATTERN.fullmatch(principle_id):
         raise PrinciplesError(f"Invalid principle ID in {path}: {principle_id}")
-    return {"id": principle_id, "title": title, "summary": summary, "rule": rule,
+    return {"id": principle_id, "title": title, "summary": summary,
+            "rule": "\n".join(sections["Principle"]).strip(),
+            "sections": {name: "\n".join(sections[name]).strip() for name in REQUIRED_SECTIONS},
             "path": path.name}
 
 
@@ -109,7 +125,8 @@ def render_index(documents):
     return "\n".join(lines) + "\n"
 
 
-def add(workspace, title, summary, rule, slug, principle_id=None):
+def add(workspace, title, summary, rule, rationale, scope, implications,
+        verification, exceptions, slug, principle_id=None):
     state = inspect(workspace)
     directory = Path(state["principles_directory"])
     principle_id = principle_id or next_id(state["principles"])
@@ -117,8 +134,13 @@ def add(workspace, title, summary, rule, slug, principle_id=None):
         raise PrinciplesError("Principle ID must use the P-001 format.")
     if not SLUG_PATTERN.fullmatch(slug):
         raise PrinciplesError("Slug must contain lowercase letters, numbers, and hyphens only.")
-    if not title.strip() or not summary.strip() or not rule.strip():
-        raise PrinciplesError("Title, summary, and rule are required.")
+    values = {
+        "title": title, "summary": summary, "rule": rule, "rationale": rationale,
+        "scope": scope, "implications": implications,
+        "verification": verification, "exceptions": exceptions,
+    }
+    if any(not value or not value.strip() for value in values.values()):
+        raise PrinciplesError("Title, summary, rule, rationale, scope, implications, verification, and exceptions are required.")
     existing_ids = {item["id"] for item in state["principles"]}
     if principle_id in existing_ids:
         raise PrinciplesError(f"Principle ID already exists: {principle_id}")
@@ -128,7 +150,12 @@ def add(workspace, title, summary, rule, slug, principle_id=None):
         raise PrinciplesError(f"Refusing to overwrite existing path: {target}")
     content = (f"# {principle_id} — {title.strip()}\n\n"
                f"Summary: {summary.strip()}\n\n"
-               f"Rule: {rule.strip()}\n")
+               f"## Principle\n{rule.strip()}\n\n"
+               f"## Rationale\n{rationale.strip()}\n\n"
+               f"## Scope\n{scope.strip()}\n\n"
+               f"## Implications\n{implications.strip()}\n\n"
+               f"## Verification\n{verification.strip()}\n\n"
+               f"## Exceptions\n{exceptions.strip()}\n")
     write_atomic(target, content)
     updated = inspect(workspace)
     write_atomic(directory / "index.md", render_index(updated["principles"]))
@@ -146,12 +173,19 @@ def main():
     add_command.add_argument("--title", required=True)
     add_command.add_argument("--summary", required=True)
     add_command.add_argument("--rule", required=True)
+    add_command.add_argument("--rationale", required=True)
+    add_command.add_argument("--scope", required=True)
+    add_command.add_argument("--implications", required=True)
+    add_command.add_argument("--verification", required=True)
+    add_command.add_argument("--exceptions", required=True)
     add_command.add_argument("--slug", required=True)
     add_command.add_argument("--id")
     args = parser.parse_args()
     try:
         result = inspect(args.workspace) if args.operation == "inspect" else add(
-            args.workspace, args.title, args.summary, args.rule, args.slug, args.id)
+            args.workspace, args.title, args.summary, args.rule, args.rationale,
+            args.scope, args.implications, args.verification, args.exceptions,
+            args.slug, args.id)
     except (PrinciplesError, OSError, RuntimeError) as exc:
         print(json.dumps({"status": "error", "message": str(exc)}), file=sys.stderr)
         return 1

@@ -10,6 +10,15 @@ SCRIPT = Path(__file__).parents[3] / "plugins/caraxes/skills/add-principle/scrip
 
 
 class PrinciplesTests(unittest.TestCase):
+    def complete_args(self):
+        return (
+            "--rationale", "Consistent technical language improves collaboration.",
+            "--scope", "Source code and developer-facing technical artifacts; exclude user-facing product content when the project requires another language.",
+            "--implications", "Technical contributions use one shared language while product localization remains a project decision.",
+            "--verification", "Review the affected artifacts and confirm they use English.",
+            "--exceptions", "None unless the project documents a specific legal or product requirement.",
+        )
+
     def run_helper(self, operation, workspace, *args):
         result = subprocess.run(
             [sys.executable, str(SCRIPT), operation, "--workspace", str(workspace), *args],
@@ -42,6 +51,7 @@ class PrinciplesTests(unittest.TestCase):
             "--title", "English for code",
             "--summary", "Write code and technical artifacts in English.",
             "--rule", "Use English for source code, comments, tests, and technical documentation.",
+            *self.complete_args(),
             "--slug", "english-for-code",
         )
 
@@ -57,7 +67,13 @@ class PrinciplesTests(unittest.TestCase):
         workspace = self.workspace()
         document = workspace / "principles" / "P-001-existing.md"
         document.write_text(
-            "# P-001 — Existing\n\nSummary: Existing summary.\n\nRule: Existing rule.\n",
+            "# P-001 — Existing\n\nSummary: Existing summary.\n\n"
+            "## Principle\nExisting rule.\n\n"
+            "## Rationale\nExisting rationale.\n\n"
+            "## Scope\nExisting scope and exclusions.\n\n"
+            "## Implications\nExisting implications.\n\n"
+            "## Verification\nExisting verification.\n\n"
+            "## Exceptions\nNone.\n",
             encoding="utf-8",
         )
 
@@ -67,6 +83,7 @@ class PrinciplesTests(unittest.TestCase):
             "--title", "Replacement",
             "--summary", "Replacement summary.",
             "--rule", "Replacement rule.",
+            *self.complete_args(),
             "--slug", "replacement",
         )
 
@@ -85,11 +102,33 @@ class PrinciplesTests(unittest.TestCase):
             "--title", "New principle",
             "--summary", "New summary.",
             "--rule", "New rule.",
+            *self.complete_args(),
             "--slug", "new-principle",
         )
 
         self.assertNotEqual(code, 0)
         self.assertIn("must start with an ID heading", result["message"])
+        self.assertFalse((workspace / "principles" / "P-002-new-principle.md").exists())
+
+    def test_incomplete_document_stops_addition(self):
+        workspace = self.workspace()
+        incomplete = workspace / "principles" / "P-001-incomplete.md"
+        incomplete.write_text(
+            "# P-001 — Incomplete\n\nSummary: Missing required sections.\n",
+            encoding="utf-8",
+        )
+
+        code, result = self.run_helper(
+            "add", workspace,
+            "--title", "New principle",
+            "--summary", "New summary.",
+            "--rule", "New rule.",
+            *self.complete_args(),
+            "--slug", "new-principle",
+        )
+
+        self.assertNotEqual(code, 0)
+        self.assertIn("required fields missing", result["message"])
         self.assertFalse((workspace / "principles" / "P-002-new-principle.md").exists())
 
     def test_missing_principles_directory_is_rejected(self):
