@@ -117,7 +117,7 @@ def run(operation, project, target=None, *, home=None):
             raise WorkspaceError(f'Registered workspace is missing or unavailable: {path}. Restore it before continuing.')
     else:
         if operation == 'resolve':
-            raise WorkspaceError('No workspace is registered. Run caraxes-init first.')
+            raise WorkspaceError('No workspace is registered. Run init first.')
         path = requested if requested is not None else config_dir / 'workspace'
         path = path.resolve()
     check_workspace(path, config_dir, home, project)

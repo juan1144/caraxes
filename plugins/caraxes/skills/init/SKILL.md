@@ -1,5 +1,5 @@
 ---
-name: caraxes-init
+name: init
 description: Initialize or locate the user's external Caraxes workspace for Spec-Driven Development (SDD), including its principles, stacks, projects, and work directories. Use when the user asks to set up Caraxes or find its workspace.
 ---
 

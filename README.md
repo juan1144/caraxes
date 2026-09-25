@@ -5,7 +5,7 @@ working context outside the repositories where features are implemented.
 
 ## Current capability
 
-`caraxes-init` initializes or locates one personal workspace. It replaces the
+`init` initializes or locates one personal workspace. It replaces the
 practice greeting skill. The rest of the SDD workflow is not implemented yet.
 
 ```text
@@ -53,19 +53,19 @@ an existing marketplace of that name before registering it.
 Start a **new Codex conversation** in the target project after installation:
 
 ```text
-Use $caraxes-init to initialize my external SDD workspace.
+Use $caraxes:init to initialize my external SDD workspace.
 ```
 
 For a custom location on first initialization:
 
 ```text
-Use $caraxes-init with /absolute/path/to/my-specs as the workspace.
+Use $caraxes:init with /absolute/path/to/my-specs as the workspace.
 ```
 
 The specified path is the workspace itself. Later requests reuse its saved location:
 
 ```text
-Use $caraxes-init to locate my workspace without changing anything.
+Use $caraxes:init to locate my workspace without changing anything.
 ```
 
 Codex may request approval to write outside the project. Grant access to the
@@ -74,12 +74,12 @@ does not automatically grant filesystem access.
 
 ## Helper behavior
 
-The skill invokes `plugins/caraxes/skills/caraxes-init/scripts/workspace.py` from
+The skill invokes `plugins/caraxes/skills/init/scripts/workspace.py` from
 its installed location. For development, run it directly from this repository:
 
 ```bash
-python3 plugins/caraxes/skills/caraxes-init/scripts/workspace.py init --project /absolute/project
-python3 plugins/caraxes/skills/caraxes-init/scripts/workspace.py resolve --project /absolute/project
+python3 plugins/caraxes/skills/init/scripts/workspace.py init --project /absolute/project
+python3 plugins/caraxes/skills/init/scripts/workspace.py resolve --project /absolute/project
 ```
 
 Use `py -3` or a verified Python 3 interpreter on Windows. Quote paths with spaces.
@@ -112,7 +112,7 @@ project directory to establish that boundary.
 .agents/plugins/marketplace.json     Repository plugin catalog
 AGENTS.md                           Contribution and language conventions
 plugins/caraxes/.codex-plugin/plugin.json
-plugins/caraxes/skills/caraxes-init/
+plugins/caraxes/skills/init/
     SKILL.md                        Agent instructions and discovery metadata
     scripts/workspace.py            Initialization and read-only resolution
 tests/unit/workspace/test_workspace.py
@@ -139,7 +139,7 @@ They have been run on Linux; native Windows and macOS runs remain pending.
 The bundled plugin-creator and skill-creator validators check manifest and skill
 structure. Installation is checked separately using `codex plugin list`.
 
-For the fresh-session smoke test, invoke caraxes-init and verify that Codex loads
+For the fresh-session smoke test, invoke init and verify that Codex loads
 its installed SKILL.md and executes the bundled helper. Check the returned absolute
 path and the four empty directories. Repeat init after adding a note and verify it
 is preserved; use resolve and verify that it makes no changes. Do not count
