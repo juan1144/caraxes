@@ -18,6 +18,18 @@ and observable. Reject or ask for clarification when it is stack-specific,
 project-specific, temporary, a task, a recipe, ambiguous, duplicated, or in
 conflict with an existing principle. Do not silently resolve conflicts.
 
+When subagent delegation is available, delegate the complete workflow below to
+one subagent. Give it the absolute project directory and the user's proposed
+principle, and ask it to inspect, validate, and write the external workspace.
+The subagent must use the helpers described here and return only a compact
+structured result containing the status, principle ID, paths, and conflicts or
+clarifications. Do not copy the full index or principle documents back into the
+main conversation. Do not run parallel writers against the same workspace.
+
+If delegation is unavailable, perform the same workflow directly. The user’s
+explicit invocation authorizes the requested principle write after validation;
+it does not authorize resolving a conflict or inventing missing information.
+
 1. Inspect the principles directory and read every existing principle returned
    by the helper. Stop on a missing directory, malformed document, invalid
    index, or unsafe path.
