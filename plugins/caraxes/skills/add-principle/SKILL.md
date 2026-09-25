@@ -20,17 +20,11 @@ project-specific, temporary, a task, a recipe, ambiguous, duplicated, or in
 conflict with an existing principle. Do not silently resolve contradictions or
 invent missing scope.
 
-When subagent delegation is available, delegate the complete workflow below to
-one subagent. Give it the absolute project directory and the user's proposed
-principle, and ask it to inspect, validate, and write the external workspace.
-The subagent must use the helpers described here and return only a compact
-structured result containing the status, principle ID, paths, and conflicts or
-clarifications. Do not copy the full index or principle documents back into the
-main conversation. Do not run parallel writers against the same workspace.
-
-If delegation is unavailable, perform the same workflow directly. The user’s
-explicit invocation authorizes the requested principle write after validation;
-it does not authorize resolving a conflict or inventing missing information.
+Perform this workflow in the current conversation. Interaction with the user is
+required when the proposal has contradictions, undefined scope, missing
+exceptions, or unclear verification. The user's explicit invocation authorizes
+the requested write after validation; it does not authorize resolving a gap by
+guessing or inventing missing information.
 
 1. Extract the candidate intent from the user's proposal. Identify every
    contradiction, undefined term, and scope gap before drafting anything. At a
@@ -43,9 +37,11 @@ it does not authorize resolving a conflict or inventing missing information.
    - whether related artifacts such as commits, issues, pull requests, or
      documentation are included.
    If the user says incompatible things, quote the ambiguity and ask a focused
-   clarification question. Do not infer the intended language, scope, or
-   exception from context.
-2. Inspect the principles directory and read every existing principle returned
+   clarification question, then wait for the answer before continuing. Ask all
+   materially related clarification questions together when possible. Do not
+   infer the intended language, scope, or exception from context.
+2. Once the proposal is sufficiently defined, inspect the principles directory
+   and read every existing principle returned
    by the helper. Stop on a missing directory, malformed or incomplete
    document, invalid index, or unsafe path.
 3. Compare the clarified proposal with all existing principles for exact and
