@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-SCRIPT = Path(__file__).resolve().parents[3] / 'plugins/caraxes/skills/caraxes-init/scripts/workspace.py'
+SCRIPT = Path(__file__).resolve().parents[3] / 'plugins/caraxes/skills/init/scripts/workspace.py'
 spec = importlib.util.spec_from_file_location('workspace', SCRIPT)
 workspace = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(workspace)
