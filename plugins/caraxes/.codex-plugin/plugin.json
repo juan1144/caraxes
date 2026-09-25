@@ -1,6 +1,6 @@
 {
   "name": "caraxes",
-  "version": "0.1.0+codex.20260923225945",
+  "version": "0.1.0+codex.20260925195335",
   "description": "Initialize and locate an external workspace for Spec-Driven Development.",
   "author": {
     "name": "juan1144",
@@ -14,7 +14,7 @@
     "developerName": "juan1144",
     "category": "Productivity",
     "capabilities": [],
-    "defaultPrompt": "Use $caraxes-init to initialize my external SDD workspace."
+    "defaultPrompt": "Use $caraxes:init to initialize my external SDD workspace."
   },
   "repository": "https://github.com/juan1144/caraxes"
 }
