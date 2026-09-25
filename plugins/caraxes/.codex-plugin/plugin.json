@@ -1,7 +1,7 @@
 {
   "name": "caraxes",
-  "version": "0.1.0+codex.20260925195335",
-  "description": "Initialize and locate an external workspace for Spec-Driven Development.",
+  "version": "0.1.0+codex.20260925213931",
+  "description": "Initialize an external Spec-Driven Development workspace and manage universal principles.",
   "author": {
     "name": "juan1144",
     "url": "https://github.com/juan1144"
@@ -9,8 +9,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Caraxes",
-    "shortDescription": "Set up your external SDD workspace.",
-    "longDescription": "Create and locate a persistent personal workspace for specifications outside target repositories.",
+    "shortDescription": "Manage your external SDD workspace.",
+    "longDescription": "Create and locate a persistent personal workspace for specifications and universal principles outside target repositories.",
     "developerName": "juan1144",
     "category": "Productivity",
     "capabilities": [],

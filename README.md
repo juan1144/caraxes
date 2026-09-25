@@ -5,8 +5,9 @@ working context outside the repositories where features are implemented.
 
 ## Current capability
 
-`init` initializes or locates one personal workspace. It replaces the
-practice greeting skill. The rest of the SDD workflow is not implemented yet.
+`init` initializes or locates one personal workspace. `add-principle` adds a
+validated universal principle and regenerates the compact principles index.
+The rest of the SDD workflow is not implemented yet.
 
 ```text
 <user-home>/
@@ -68,6 +69,12 @@ The specified path is the workspace itself. Later requests reuse its saved locat
 Use $caraxes:init to locate my workspace without changing anything.
 ```
 
+Add a cross-project, cross-stack principle through the controlled workflow:
+
+```text
+Use $caraxes:add-principle to add this universal rule: ...
+```
+
 Codex may request approval to write outside the project. Grant access to the
 intended Caraxes location through the host's permissions flow. Installing the plugin
 does not automatically grant filesystem access.
@@ -115,8 +122,13 @@ plugins/caraxes/.codex-plugin/plugin.json
 plugins/caraxes/skills/init/
     SKILL.md                        Agent instructions and discovery metadata
     scripts/workspace.py            Initialization and read-only resolution
+plugins/caraxes/skills/add-principle/
+    SKILL.md                        Principle validation and write workflow
+    scripts/principles.py           Deterministic inspection and indexing
 tests/unit/workspace/test_workspace.py
                                     Isolated filesystem tests
+tests/unit/principles/test_principles.py
+                                    Principle storage and indexing tests
 ```
 
 The marketplace's `./plugins/caraxes` source is relative to the repository root.
